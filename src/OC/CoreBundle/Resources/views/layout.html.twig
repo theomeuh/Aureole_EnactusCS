@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% block title %}OC Plateforme{% endblock %}</title>
+    <title>{% block title %}Auréole{% endblock %}</title>
 
     {% block stylesheets %}
       {# On charge le CSS de bootstrap depuis le site directement #}
@@ -14,60 +14,104 @@
     {% endblock %}
   </head>
 
-  <body>
-  <div class="container">
-    <div id="header" class="jumbotron">
-      <h1>Auréole</h1>
-      <p>
-        Auréole est un projet d'Enactus Centralesupelec
-      </p>
-      <p>
-        <a class="btn btn-primary btn-lg" href="https://www.facebook.com/EnactusCS/">
-          Retrouvez nous sur Facebook
-        </a>
-      </p>
-    </div>
+  	<body>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+			    <div class="navbar-header">
+			    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+        				<span class="icon-bar"></span> 
+      				</button>
+			      	<a class="navbar-brand" href="{{ path('oc_platform_home') }}">Auréole</a>
+			    </div>
+			    <div class="collapse navbar-collapse" id="myNavbar">
+				    <ul class="nav navbar-nav">
+					    <li class="active"><a href="{{ path('oc_platform_home') }}">Home</a></li>
+					    <li class="dropdown">
+					        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Annonces
+					        <span class="caret"></span></a>
+					        <ul class="dropdown-menu">
+					          <li><a href="#">Index</a></li>
+					          <li><a href="{{ path('oc_platform_add') }}">Ajouter</a></li>
+					        </ul>
+					    </li>
+					    <li><a href="#">En savoir plus</a></li> <!--partie gauche de la nav bar-->
+				    </ul>
+				    {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} <!--partie droite de la nav bar--> 
+						<ul class="nav navbar-nav navbar-right"> <!-- affichage barre de connexion si pas connecté-->
+				        	<li><p class="navbar-text">Déjà inscrit ?</p></li>
+				        	<li class="dropdown">
+				          	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+							<ul id="login-dp" class="dropdown-menu">
+								<li>
+									<a href="{{ path('fos_user_security_login') }}">Connexion</a>			
+								</li>
+							</ul>
+				        	</li>
+				      	</ul>
+				    	{% else %}
+				    	<ul class="nav navbar-nav navbar-right">
+				    		<li><p class="navbar-text">Connecté en tant que {{ app.user.username }}</p></li>
+		          			<li><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
+	    				</ul>
+				    {% endif %}
+				</div>
+			</div>
+		</nav>
 
-    <div class="row">
-      <div id="menu" class="col-md-3">
-        <h3>Les annonces</h3>
-        <ul class="nav nav-pills nav-stacked">
-          <li><a href="{{ path('oc_platform_home') }}">Accueil</a></li>
-          {% if is_granted('ROLE_AUTEUR') %}
-            <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
-          {% endif %}
-        </ul>
+		<div class="container">
+		    <div id="header" class="jumbotron">
+		      <h1>Auréole</h1>
+		      <p>
+		        Auréole est un projet d'Enactus Centralesupelec
+		      </p>
+		      <p>
+		        <a class="btn btn-primary btn-lg" href="https://www.facebook.com/EnactusCS/">
+		          Retrouvez nous sur Facebook
+		        </a>
+		      </p>
+		    </div>
 
-        <h4>Dernières annonces</h4>
-        {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
+		    <div class="row">
+		      <div id="menu" class="col-md-3">
+		        <h3>Les annonces</h3>
+		        <ul class="nav nav-pills nav-stacked">
+		          <li><a href="{{ path('oc_platform_home') }}">Accueil</a></li>
+		          {% if is_granted('ROLE_AUTEUR') %}
+		            <li><a href="{{ path('oc_platform_add') }}">Ajouter une annonce</a></li>
+		          {% endif %}
+		        </ul>
 
-        <h3>Utilisateur</h3>
-        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-          Connecté en tant que {{ app.user.username }}
-          <br>
-          <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
-        {% else %}
-          <a href="{{ path('fos_user_security_login') }}">Connexion</a>
-        {% endif %}
-      </div>
-      <div id="content" class="col-md-9">
-        {% block body %}
-        {% endblock %}
-      </div>
-    </div>
+		        <h4>Dernières annonces</h4>
+		        {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 10})) }}
 
-    <hr>
+		        <h3>Utilisateur</h3>
+		        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+			        Connecté en tant que {{ app.user.username }}
+			        <br>
+			        <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+		        {% else %}
+		          	<a href="{{ path('fos_user_security_login') }}">Connexion</a>
+		        {% endif %}
+		      	</div>
+		      	<div id="content" class="col-md-9">
+		        	{% block body %}
+		        	{% endblock %}
+		      	</div>
+		    </div>
 
-    <footer>
-      <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
-    </footer>
-  </div>
+		    <hr>
 
-  {% block javascripts %}
-    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-  {% endblock %}
+			<footer>
+		    	<p>Born to be Wild © {{ 'now'|date('Y') }}.</p>
+			</footer>
+		</div>
 
-  </body>
+		{% block javascripts %}
+		    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+		    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		{% endblock %}
+	</body>
 </html>
