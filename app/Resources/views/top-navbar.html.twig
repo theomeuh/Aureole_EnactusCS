@@ -1,0 +1,49 @@
+{% block navbar %}
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+	    <div class="navbar-header">
+	    	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+				<span class="icon-bar"></span> 
+				</button>
+	      	<a class="navbar-brand" href="{{ path('oc_platform_home') }}">Auréole</a>
+	    </div>
+	    <div class="collapse navbar-collapse" id="myNavbar">
+		    <ul class="nav navbar-nav"> <!--partie gauche de la nav bar-->
+			    <li class="active"><a href="{{ path('oc_platform_home') }}">Home</a></li>
+			    <li class="dropdown">
+			        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Annonces
+			        <span class="caret"></span></a>
+			        <ul class="dropdown-menu">
+			          <li><a href="#">Index</a></li>
+			          <li><a href="{{ path('oc_platform_add') }}">Ajouter</a></li>
+			        </ul>
+			    </li>
+			    <li><a href="#">Notre engagement</a></li>
+			    <li><a href="#">L'équipe</a></li>
+		    </ul>
+		    {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} <!--partie droite de la nav bar--> 
+				<ul class="nav navbar-nav navbar-right"> <!-- affichage barre de connexion si pas connecté-->
+		        	<li><p class="navbar-text">Déjà inscrit ?</p></li>
+		        	<li class="dropdown">
+		          	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+					<ul id="login-dp" class="dropdown-menu">
+						<li>
+							{% block fos_user_content %}
+								{{ include('@FOSUser/Security/login_content.html.twig') }}
+							{% endblock fos_user_content %}			
+						</li>
+					</ul>
+		        	</li>
+		      	</ul>
+		    	{% else %}
+		    	<ul class="nav navbar-nav navbar-right">
+		    		<li><p class="navbar-text">Connecté en tant que {{ app.user.username }}</p></li>
+	      			<li><a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
+				</ul>
+		    {% endif %}
+		</div>
+	</div>
+</nav>
+{% endblock %}
